@@ -8,54 +8,62 @@ use App\User;
 class LoginController extends Controller
 {
     public function index(Request $request) {
-        
-        //Tratamento de tipos de erro
-        $erro = '';
-        switch ($request -> get('erro')){
-            case 1:
-                $erro = "Usuário e/ou senha incorretos!";
-                break;
-            case 2:
-                $erro = "É necessário o login para ter acesso à página";
-                break;
 
+        $erro = '';
+
+        if($request->get('erro') == 1) {
+            $erro = 'Usuário e ou senha não existe';
+        }
+
+        if($request->get('erro') == 2) {
+            $erro = 'Necessario realizar login para ter acesso a página';
         }
 
         return view('site.login', ['titulo' => 'Login', 'erro' => $erro]);
     }
 
     public function autenticar(Request $request) {
+
+        //regras de validação
         $regras = [
-            'usuario' => 'required|email',
+            'usuario' => 'email',
             'senha' => 'required'
         ];
 
+        //as mensagens de feedback de validação
         $feedback = [
-            'required'=>'O campo :attribute é obrigatório.',
-            'usuario.email' => 'Insira um email válido'
+            'usuario.email' => 'O campo usuário (e-mail) é obrigatório',
+            'senha.required' => 'O campo senha é obrigatório'
         ];
 
+        //se não passar no validate
         $request->validate($regras, $feedback);
 
+        //recuperamos os parâmetros do formulário
         $email = $request->get('usuario');
         $password = $request->get('senha');
 
+        echo "Usuário: $email | Senha: $password";
+        echo "<br>";
+
+        //iniciar o Model User
         $user = new User();
 
         $usuario = $user->where('email', $email)
-            ->where('password', $password)
-            ->get()
-            ->first();
+                    ->where('password', $password)
+                    ->get()
+                    ->first();
 
-        if(isset($usuario->name)){
+        if(isset($usuario->name)) {
+
             session_start();
-            $_SESSION['nome']=$usuario->name;
-            $_SESSION['email']=$usuario->email;
+            $_SESSION['nome'] = $usuario->name;
+            $_SESSION['email'] = $usuario->email;
 
             return redirect()->route('app.home');
+        } else {
+            return redirect()->route('site.login', ['erro' => 1]);
         }
-        else
-            return redirect()->route('site.login', ['erro' => 1]); 
     }
 
     public function sair() {

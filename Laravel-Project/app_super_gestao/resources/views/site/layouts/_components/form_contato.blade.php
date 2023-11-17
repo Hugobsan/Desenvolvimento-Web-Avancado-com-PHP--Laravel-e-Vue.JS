@@ -1,26 +1,40 @@
 {{ $slot }}
-<form action="{{ route($action) }}" method="post">
+<form action={{ route('site.contato') }} method="post">
     @csrf
-    <input name="nome" value="{{ old('nome') }}" type="text" placeholder="Nome" class="{{ $borda }}">
-    <span class="error">{{ $errors->has('nome') ? $errors->first('nome') : ''}}</span>
+    <input name="nome" value="{{ old('nome') }}" type="text" placeholder="Nome" class="{{ $classe }}">
+    @if ($errors->has('nome'))
+        {{ $errors->first('nome') }}
+    @endif
     <br>
-    <input type="text" name="telefone" value="{{ old('telefone') }}" id="telefone" placeholder="(00) 00000-0000" class="{{ $borda }}" maxlength="15" />
-    <span class="error">{{ $errors->has('telefone') ? $errors->first('telefone') : ''}}</span>
+    <input name="telefone" value="{{ old('telefone') }}" type="text" placeholder="Telefone" class="{{ $classe }}">
+    {{ $errors->has('telefone') ? $errors->first('telefone') : '' }}
     <br>
-    <input name="email" value="{{ old('email') }}" type="email" placeholder="E-mail" class="{{ $borda }}">
-    <span class="error">{{ $errors->has('email') ? $errors->first('email') : ''}}</span>
+    <input name="email" value="{{ old('email') }}" type="text" placeholder="E-mail" class="{{ $classe }}">
+    {{ $errors->has('email') ? $errors->first('email') : '' }}
     <br>
-    <label for="motivo">Qual o motivo do contato?</label>
-    <select name="motivo_contatos_id" id="motivo" class="{{ $borda }}">
-        @foreach($motivos_contato as $key => $motivo_contato)
-            <option value="{{$motivo_contato->id}}" {{ old('motivo_contatos_id')== $motivo_contato->id ? 'selected' : ''}}>{{$motivo_contato->motivo_contato}}</option>
+
+    <select name="motivo_contatos_id" class="{{ $classe }}">
+        <option value="">Qual o motivo do contato?</option>
+
+        @foreach($motivo_contatos as $key => $motivo_contato)
+            <option value="{{$motivo_contato->id}}" {{ old('motivo_contatos_id') == $motivo_contato->id ? 'selected' : '' }}>{{$motivo_contato->motivo_contato}}</option>
         @endforeach
     </select>
-    <span class="error">{{ $errors->has('motivo_contatos_id') ? $errors->first('motivo_contatos_id') : ''}}</span>
+    {{ $errors->has('motivo_contatos_id') ? $errors->first('motivo_contatos_id') : '' }}
     <br>
-    <textarea name="mensagem" class="{{ $borda }}" placeholder="Preencha aqui a sua mensagem">{{ (old('mensagem') != '') ? old('mensagem') : 'Preencha aqui a sua mensagem' }} 
-    </textarea>
-    <span class="error">{{ $errors->has('mensagem') ? $errors->first('mensagem') : ''}}</span>
+    <textarea name="mensagem" class="{{ $classe }}">{{ (old('mensagem') != '') ? old('mensagem') : 'Preencha aqui a sua mensagem' }}</textarea>
+    {{ $errors->has('mensagem') ? $errors->first('mensagem') : '' }}
     <br>
-    <button type="submit" class="{{ $borda }}">Enviar</button>
+    <button type="submit" class="{{ $classe }}">ENVIAR</button>
 </form>
+
+@if($errors->any())
+    <div style="position:absolute; top:0px; width:100%; background:red">
+
+        @foreach ($errors->all() as $erro)
+            {{ $erro }}
+            <br >
+        @endforeach
+
+    </div>
+@endif
