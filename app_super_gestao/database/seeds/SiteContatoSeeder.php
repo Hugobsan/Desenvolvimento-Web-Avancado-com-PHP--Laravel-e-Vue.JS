@@ -12,12 +12,14 @@ class SiteContatoSeeder extends Seeder
      */
     public function run()
     {
-        SiteContato::create([
+        /*SiteContato::create([
             'nome' => 'Sistema SG',
             'telefone' => '(11) 99999-9999',
             'email' => 'contato@sg.com.br ',
             'motivo_contato' => 1,
             'mensagem' => 'Seja bem-vindo ao sistema Super Gestão',
-        ]);
+        ]);*/
+
+        factory(SiteContato::class, 100)->create();
     }
 }
